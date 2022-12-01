@@ -30,6 +30,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
 import com.google.common.util.concurrent.Striped;
 import com.crawljax.core.Crawler;
+import jep.*;
+
 
 /**
  * Contains all the {@link CandidateCrawlAction}s that still have to be fired to get a result.
@@ -90,6 +92,19 @@ public class UnfiredFragmentCandidates {
 	public static int state_tracker = -1;
 	
 	private CandidateCrawlAction getBestAction(List<CandidateCrawlAction> availableActions, StateVertex state, FragmentManager fragmentManager) {
+		//System.setProperty(“java.library.path”, “/usr/local/bin/jep”);
+		jep.Interpreter interp = new jep.SharedInterpreter();
+		interp.exec("from java.lang import System");
+		interp.exec("s = 'Hello World'");
+		interp.exec("System.out.println(s)");
+		/*try (jep.Interpreter interp = new jep.SharedInterpreter()) {
+
+			interp.exec("s = 'Hello World'");
+			interp.exec("System.out.println(s)");
+			interp.exec("print(s)");
+			interp.exec("print(s[1:-1])");
+		}*/
+
 		if(state.getRootFragment()!= null && !state.getRootFragment().isAccessTransferred()) {
 			fragmentManager.setAccess(state);
 		}
