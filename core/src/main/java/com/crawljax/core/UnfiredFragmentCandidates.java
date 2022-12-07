@@ -92,11 +92,41 @@ public class UnfiredFragmentCandidates {
 	public static int state_tracker = -1;
 	
 	private CandidateCrawlAction getBestAction(List<CandidateCrawlAction> availableActions, StateVertex state, FragmentManager fragmentManager) {
+
+		PyConfig pyConfig = new PyConfig();
+		//pyConfig.setPythonHome("/usr/local/bin/python3.10");
+		//pyConfig.setPythonPath("/usr/local/bin/python3.10/site-packages");
+		try {
+			MainInterpreter.setInitParams(pyConfig);
+		} catch (JepException e) {
+			e.printStackTrace();
+		}
+
 		//System.setProperty(“java.library.path”, “/usr/local/bin/jep”);
 		jep.Interpreter interp = new jep.SharedInterpreter();
 		interp.exec("from java.lang import System");
 		interp.exec("s = 'Hello World'");
+		interp.exec("s *= 2");
 		interp.exec("System.out.println(s)");
+		interp.exec("System.out.println(s)");
+		interp.exec("print(s)");
+		interp.exec("print(s[1:-1])");
+
+		interp.exec("import somePyModule");
+		// any of the following work, these are just pseudo-examples
+
+		// using exec(String) to invoke methods
+		//interp.set("arg", obj);
+		interp.exec("x = somePyModule.foo1(arg)");
+		Object result1 = interp.getValue("x");
+
+		// using getValue(String) to invoke methods
+		Object result2 = interp.getValue("somePyModule.foo2()");
+
+		// using invoke to invoke methods
+		interp.exec("foo3 = somePyModule.foo3");
+		Object result3 = interp.invoke("foo3", obj);
+
 		/*try (jep.Interpreter interp = new jep.SharedInterpreter()) {
 
 			interp.exec("s = 'Hello World'");
